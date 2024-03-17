@@ -1,0 +1,21 @@
+{
+  "version": 2,
+  "dgSpecHash": "sCEGhUhgPm/HqOM6XjMSNc+tvGH4tGDuXRd603Ixx3vX09Jr0n6GemEO4gssN9BEg9pNfoPFTuieLLLVJ4eYvA==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\parah\\OneDrive\\Документы\\ReadSphere\\readsphere\\readsphere_book_microservice\\Domains\\Domains.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\parah\\.nuget\\packages\\microsoft.entityframeworkcore\\9.0.0-preview.2.24128.4\\microsoft.entityframeworkcore.9.0.0-preview.2.24128.4.nupkg.sha512",
+    "C:\\Users\\parah\\.nuget\\packages\\microsoft.entityframeworkcore.abstractions\\9.0.0-preview.2.24128.4\\microsoft.entityframeworkcore.abstractions.9.0.0-preview.2.24128.4.nupkg.sha512",
+    "C:\\Users\\parah\\.nuget\\packages\\microsoft.entityframeworkcore.analyzers\\9.0.0-preview.2.24128.4\\microsoft.entityframeworkcore.analyzers.9.0.0-preview.2.24128.4.nupkg.sha512",
+    "C:\\Users\\parah\\.nuget\\packages\\microsoft.extensions.caching.abstractions\\9.0.0-preview.2.24128.5\\microsoft.extensions.caching.abstractions.9.0.0-preview.2.24128.5.nupkg.sha512",
+    "C:\\Users\\parah\\.nuget\\packages\\microsoft.extensions.caching.memory\\9.0.0-preview.2.24128.5\\microsoft.extensions.caching.memory.9.0.0-preview.2.24128.5.nupkg.sha512",
+    "C:\\Users\\parah\\.nuget\\packages\\microsoft.extensions.configuration.abstractions\\2.2.0\\microsoft.extensions.configuration.abstractions.2.2.0.nupkg.sha512",
+    "C:\\Users\\parah\\.nuget\\packages\\microsoft.extensions.dependencyinjection\\9.0.0-preview.2.24128.5\\microsoft.extensions.dependencyinjection.9.0.0-preview.2.24128.5.nupkg.sha512",
+    "C:\\Users\\parah\\.nuget\\packages\\microsoft.extensions.dependencyinjection.abstractions\\9.0.0-preview.2.24128.5\\microsoft.extensions.dependencyinjection.abstractions.9.0.0-preview.2.24128.5.nupkg.sha512",
+    "C:\\Users\\parah\\.nuget\\packages\\microsoft.extensions.logging\\9.0.0-preview.2.24128.5\\microsoft.extensions.logging.9.0.0-preview.2.24128.5.nupkg.sha512",
+    "C:\\Users\\parah\\.nuget\\packages\\microsoft.extensions.logging.abstractions\\9.0.0-preview.2.24128.5\\microsoft.extensions.logging.abstractions.9.0.0-preview.2.24128.5.nupkg.sha512",
+    "C:\\Users\\parah\\.nuget\\packages\\microsoft.extensions.options\\9.0.0-preview.2.24128.5\\microsoft.extensions.options.9.0.0-preview.2.24128.5.nupkg.sha512",
+    "C:\\Users\\parah\\.nuget\\packages\\microsoft.extensions.primitives\\9.0.0-preview.2.24128.5\\microsoft.extensions.primitives.9.0.0-preview.2.24128.5.nupkg.sha512"
+  ],
+  "logs": []
+}
