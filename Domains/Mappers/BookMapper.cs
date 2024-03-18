@@ -6,9 +6,9 @@ public static class BookMapper
     {
         return new BookDTO()
         {
-            ID = book.ID,
+            Id = book.Id,
             Author = book.Author,
-            Cover_ID = book.Cover_ID,
+            CoverId = book.CoverId,
             Title = book.Title
         };
     }
@@ -17,9 +17,9 @@ public static class BookMapper
     {
         return new Book()
         {
-            ID = bookDto.ID,
+            Id = bookDto.Id,
             Author = bookDto.Author,
-            Cover_ID = bookDto.Cover_ID,
+            CoverId = bookDto.CoverId,
             Title = bookDto.Title
         };
     }
