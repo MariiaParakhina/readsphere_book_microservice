@@ -23,4 +23,16 @@ public class GetAllBooksUseCaseTest
         //Assert  
         Assert.That(books.Count == 1);
     }
+    public void TestUseCase_fail()
+    {
+        // Arrange
+        IBookRepository repository = new BooksRepositoryHelper();
+        var useCase = new GetAllBooksUseCase(repository);
+
+        //Act 
+        List<Book> books = useCase.Execute();
+
+        //Assert  
+        Assert.That(books.Count != 2);
+    }
 }
