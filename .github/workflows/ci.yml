@@ -22,6 +22,9 @@ jobs:
         with:
           dotnet-version: '8.x'
 
+     - name: Install ReportGenerator
+        run: dotnet tool install -g dotnet-reportgenerator-globaltool
+
       - name: Restore Dependencies
         run: dotnet restore
 
@@ -31,6 +34,12 @@ jobs:
       - name: Test Application with Code Coverage
         run: dotnet test --configuration Release --no-restore /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura
 
-      - name: Publish Code Coverage
+      - name: Generate Coverage Report
         run: |
-          bash <(curl -s https://codecov.io/bash) -f "Test.Core/coverage.cobertura.xml" -t ${{ secrets.CODECOV_TOKEN }}
+          reportgenerator "-reports:Test.Core/coverage.cobertura.xml" "-targetdir:coverage_report" "-reporttypes:Html"
+
+      - name: Publish Coverage Report
+        uses: actions/upload-artifact@v2
+        with:
+          name: coverage-report
+          path: coverage_report
