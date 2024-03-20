@@ -33,12 +33,12 @@ jobs:
 
       - name: Build and Test with Code Coverage
         run: |
-          dotnet test --configuration Release /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura
-          codecov
-        env:
-          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+          dotnet test --configuration Release /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura        
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v4.0.1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          slug: MariiaParakhina/readsphere_book_microservice  
 
-      - name: Generate Coverage Report
-        run: |
-          reportgenerator "-reports:Test.Core/coverage.cobertura.xml" "-targetdir:coverage_report" "-reporttypes:Html"
+       
  
