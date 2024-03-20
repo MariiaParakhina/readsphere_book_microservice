@@ -31,13 +31,14 @@ jobs:
       - name: Build Application
         run: dotnet build --configuration Release  
 
-      - name: Test Application with Code Coverage
-        run: dotnet test --configuration Release --no-restore /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura
+      - name: Build and Test with Code Coverage
+        run: |
+          dotnet test --configuration Release /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura
+          codecov
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
       - name: Generate Coverage Report
         run: |
           reportgenerator "-reports:Test.Core/coverage.cobertura.xml" "-targetdir:coverage_report" "-reporttypes:Html"
-
-      - name: Embed Coverage Report in README
-        run: |
-          echo "<iframe src=\"coverage_report/index.html\" width=\"100%\" height=\"600\"></iframe>" > README.md
+ 
