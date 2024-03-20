@@ -38,7 +38,11 @@ jobs:
         run: |
           reportgenerator "-reports:Test.Core/coverage.cobertura.xml" "-targetdir:coverage_report" "-reporttypes:Html"
 
-      - name: Publish Coverage Report
+      - name: Embed Coverage Report in README
+        run: |
+          echo "<iframe src=\"coverage_report/index.html\" width=\"100%\" height=\"600\"></iframe>" > README.md
+
+      - name: Publish Coverage Report as Artifact
         uses: actions/upload-artifact@v2
         with:
           name: coverage-report
