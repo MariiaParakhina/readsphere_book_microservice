@@ -6,6 +6,12 @@ on:
       - main  
 jobs:
   build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+      checks: write
+
     - name: install the gcloud cli
       uses: google-github-actions/setup-gcloud@v0
       with:
