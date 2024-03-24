@@ -59,7 +59,7 @@ jobs:
         uses: actions/checkout@v2
       - name: Build image
         working-directory: ./
-        run: docker build -f Dockerfile -t book-api:latest .   
+        run: docker build -f ./Configuration/Dockerfile -t book-api:latest .   
       - name: Log in to Docker Hub
         run: echo "${{ secrets.DOCKER_HUB_TOKEN }}" | docker login -u mariia5345 --password-stdin
       - name: Push image to Docker Hub
