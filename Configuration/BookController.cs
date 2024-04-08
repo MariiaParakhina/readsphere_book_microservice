@@ -10,8 +10,8 @@ namespace BookService;
 [ApiController]
 public class BookController(IBookFacade bookFacade) : ControllerBase
 {
-    [HttpGet]
-    //[RequireHttps]
+    // [HttpGet]
+    [RequireHttps]
     public IActionResult GetAllBooks()
     {
         List<Book> books = bookFacade.GetAllBooks();

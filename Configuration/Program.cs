@@ -1,5 +1,7 @@
+using System.Net;
 using BookService;
 using dotenv.net;
+using Microsoft.AspNetCore.Authentication.Certificate;
 
 var builder = WebApplication.CreateBuilder(args);
 DependencyInjection.ConfigureServices(builder.Services);
@@ -11,6 +13,27 @@ DependencyInjection.ConfigureServices(builder.Services);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddControllers();
 builder.Services.AddSwaggerGen();
+ 
+builder.WebHost.ConfigureKestrel((context, options) =>
+{
+    var certPath = "./cert/certificate.pfx";
+    options.ListenAnyIP(443, listenOptions =>
+    {
+        listenOptions.UseHttps(certPath, "pass");
+    });
+});
+
+builder.Services.AddAuthentication(CertificateAuthenticationDefaults.AuthenticationScheme)
+    .AddCertificate(options =>
+    {
+        options.Events = new CertificateAuthenticationEvents
+        {
+            OnCertificateValidated = context =>
+            {
+                return Task.CompletedTask;
+            }
+        };
+    });
 
 builder.Services.AddCors((options) =>
 {
@@ -31,11 +54,10 @@ if (app.Environment.IsDevelopment())
 } 
 
 // Ensure that the middleware knows the HTTPS port
-
+app.UseHttpsRedirection(); 
 app.UseAuthorization();
 app.UseRouting();
 app.UseHsts();
-
 app.UseAuthentication(); 
 DotEnv.Load();
 app.Use(async (context, next) =>

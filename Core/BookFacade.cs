@@ -5,10 +5,16 @@ using Domains.Interfaces;
 
 namespace Core;
 
-public class BookFacade(GetAllBooksUseCase getAllBooksUseCase) : IBookFacade
+public class BookFacade: IBookFacade
 {
+    private readonly GetAllBooksUseCase _getAllBooksUseCase;
+
+    public BookFacade(GetAllBooksUseCase getAllBooksUseCase)
+    {
+        _getAllBooksUseCase = getAllBooksUseCase;
+    }
     public List<Book> GetAllBooks()
     {
-        return getAllBooksUseCase.Execute();
+        return _getAllBooksUseCase.Execute();
     }
 }
