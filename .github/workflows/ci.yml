@@ -66,6 +66,7 @@ jobs:
         run: |
           docker tag docker.io/library/book-api:latest mariia5345/book-api:latest
           docker push mariia5345/book-api:latest
+          docker run -d -p 8080:80 --name readsphere mariia5345/book-api:latest
   deploy:
     runs-on: ubuntu-latest
     needs: docker
