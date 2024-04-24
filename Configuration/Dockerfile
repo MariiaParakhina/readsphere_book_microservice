@@ -1,18 +1,15 @@
 ﻿FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
 USER $APP_UID 
-
-
 WORKDIR /app    
-EXPOSE 442
 EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["./Configuration/Configuration.csproj", "Configuration/"]
-COPY ["./Core/Core.csproj", "Core/"]
-COPY ["./Domains/Domains.csproj", "Domains/"]
-COPY ["./Infrastructure/Infrastructure.csproj", "Infrastructure/"]
+COPY ["Configuration/Configuration.csproj", "Configuration/"]
+COPY ["Core/Core.csproj", "Core/"]
+COPY ["Domains/Domains.csproj", "Domains/"]
+COPY ["Infrastructure/Infrastructure.csproj", "Infrastructure/"]
 RUN dotnet restore "Configuration/Configuration.csproj"
 COPY . .
 WORKDIR "/src/Configuration"
