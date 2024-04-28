@@ -1,8 +1,6 @@
-using System.Globalization;
 using Domains;
 using Domains.Interfaces;
-using Infrastructure.Mappers;
-using Microsoft.EntityFrameworkCore;
+using Infrastructure.Mappers; 
 using Npgsql;
 
 namespace Infrastructure.DataProviders;
@@ -14,11 +12,11 @@ public class BookRepository : IBookRepository
     {
         _databaseConfig = databaseConfig;
     }
-    public List<Book> GetBooks()
+    public List<Book> GetBooks(int userId)
     {
         List<Book> data = new List<Book>();
         var connectionString = _databaseConfig.GetConnectionString(); 
-        var sql = "SELECT * FROM book"; 
+        var sql = "SELECT books.* FROM books JOIN user_book ON books.id = user_book.book_id WHERE user_book.user_id = @userID;"; 
  
         using (var conn = new NpgsqlConnection(connectionString))
         {
@@ -26,6 +24,7 @@ public class BookRepository : IBookRepository
  
             using (var cmd = new NpgsqlCommand(sql, conn))
             {
+                cmd.Parameters.AddWithValue("userID", userId);
                 using (var reader = cmd.ExecuteReader())
                 { 
                     while (reader.Read())

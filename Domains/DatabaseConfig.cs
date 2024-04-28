@@ -11,7 +11,7 @@ public class DatabaseConfig : IDatabaseConfig
         _configuration = configuration;
     }
 
-    public string GetConnectionString()
+    public string? GetConnectionString()
     {
         // Retrieve connection string from configuration
         return _configuration["DATABASE_CONNECTION_STRING"];

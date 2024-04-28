@@ -13,8 +13,8 @@ public class BookFacade: IBookFacade
     {
         _getAllBooksUseCase = getAllBooksUseCase;
     }
-    public List<Book> GetAllBooks()
+    public List<Book> GetAllBooks(int userId)
     {
-        return _getAllBooksUseCase.Execute();
+        return _getAllBooksUseCase.Execute(userId);
     }
 }

@@ -1,5 +1,4 @@
- 
-using Domains;
+ using Domains;
 using Domains.Interfaces;
 using Infrastructure.DataProviders;
 
@@ -13,8 +12,8 @@ public class GetAllBooksUseCase:IGetAllBooksUseCase
     {
         _bookRepository = bookRepository;
     }
-    public List<Book> Execute()
+    public List<Book> Execute(int userId)
     {
-        return _bookRepository.GetBooks();
+        return _bookRepository.GetBooks(userId);
     }
 }

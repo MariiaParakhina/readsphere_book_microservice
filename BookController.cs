@@ -14,7 +14,9 @@ public class BookController(IBookFacade bookFacade) : ControllerBase
     [RequireHttps]
     public IActionResult GetAllBooks()
     {
-        List<Book> books = bookFacade.GetAllBooks();
+        string userId = HttpContext.Request.Headers["X-User-Id"].ToString();
+        if (userId is null) return StatusCode(500, "User ID not provided");
+        List<Book> books = bookFacade.GetAllBooks(int.Parse(userId));
 
         // Map domain entities to DTOs
         var bookDtos = books.Select(BookMapper.MapDTO);

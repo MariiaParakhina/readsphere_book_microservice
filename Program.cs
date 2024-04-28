@@ -70,5 +70,3 @@ app.Use(async (context, next) =>
 });
 app.MapControllers();
 app.Run();
-
- 

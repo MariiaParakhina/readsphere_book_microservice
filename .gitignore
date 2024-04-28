@@ -1,7 +1,7 @@
 # ASP.NET Core
 bin/
 obj/
-Configuration/.env/
+.env/
 
 # Visual Studio Code
 .vscode/

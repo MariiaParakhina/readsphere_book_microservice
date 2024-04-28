@@ -1,26 +1,27 @@
 ﻿FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
-USER $APP_UID 
-WORKDIR /app    
+USER $APP_UID
+WORKDIR /app
 EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["Configuration/Configuration.csproj", "Configuration/"]
+COPY ["BookService.csproj", "./"]
 COPY ["Core/Core.csproj", "Core/"]
 COPY ["Domains/Domains.csproj", "Domains/"]
 COPY ["Infrastructure/Infrastructure.csproj", "Infrastructure/"]
-RUN dotnet restore "Configuration/Configuration.csproj"
+COPY ["Test.Core/Test.Core.csproj", "Test.Core/"]
+RUN dotnet restore "BookService.csproj"
 COPY . .
-WORKDIR "/src/Configuration"
-RUN dotnet build "Configuration.csproj" -c $BUILD_CONFIGURATION -o /app/build
+WORKDIR "/src/"
+RUN dotnet build "BookService.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "Configuration.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "BookService.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-COPY ["./cert", "cert"]
-ENTRYPOINT ["dotnet", "Configuration.dll"]
+COPY ["cert", "cert"]
+ENTRYPOINT ["dotnet", "BookService.dll"]
