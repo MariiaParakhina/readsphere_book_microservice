@@ -1,28 +1,62 @@
 
-using Domains;
-using Domains.Interfaces;
-using Domains.Mappers;
-using Microsoft.AspNetCore.Mvc;
+    using Domains;
+    using Domains.Interfaces;
+    using Domains.Mappers;
+    using Microsoft.AspNetCore.Mvc;
 
-namespace BookService;
+    namespace BookService;
 
-[Route("api/[controller]")]
-[ApiController]
-public class BookController(IBookFacade bookFacade) : ControllerBase
-{
-    // [HttpGet]
-    [RequireHttps]
-    public IActionResult GetAllBooks()
+    [Route("api/[controller]")]
+    [ApiController]
+    public class BookController(IBookFacade bookFacade) : ControllerBase
     {
-        string userId = HttpContext.Request.Headers["X-User-Id"].ToString();
-        if (userId is null) return StatusCode(500, "User ID not provided");
-        List<Book> books = bookFacade.GetAllBooks(int.Parse(userId));
+        [HttpGet]
+        [RequireHttps]
+        public IActionResult GetAllBooks()
+        {
+            string userId = HttpContext.Request.Headers["X-User-Id"].ToString();
+            if (userId is null) return StatusCode(500, "User ID not provided");
+            List<Book> books = bookFacade.GetAllBooks(int.Parse(userId));
 
-        // Map domain entities to DTOs
-        var bookDtos = books.Select(BookMapper.MapDTO);
+            // Map domain entities to DTOs
+            var bookDtos = books.Select(BookMapper.MapDTO);
 
-        return Ok(bookDtos);
+            return Ok(bookDtos);
+        }
+
+        [HttpPost]
+        [RequireHttps]
+        public async Task<IActionResult> AddBook(Book book)
+        {
+            string userId = HttpContext.Request.Headers["X-User-Id"].ToString();
+            if (userId is null) return StatusCode(500, "User ID not provided");
+
+            try
+            {
+                await bookFacade.AddBook(int.Parse(userId), book);
+                return Ok();
+            }
+            catch(Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+        [HttpDelete("{bookId}")]
+        [RequireHttps]
+        public async Task<IActionResult> DeleteBook(int bookId)
+        {
+            string userId = HttpContext.Request.Headers["X-User-Id"].ToString();
+            if (userId is null) return StatusCode(500, "User ID not provided");
+
+            try
+            {
+                await bookFacade.DeleteBook(int.Parse(userId), bookId);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
     }
- 
-    
-}

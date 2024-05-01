@@ -1,6 +1,5 @@
-
 CREATE TABLE books (
-    id INT PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     cover_id INT UNIQUE,
     name VARCHAR(255),
     author VARCHAR(255)
@@ -12,3 +11,4 @@ CREATE TABLE user_book (
     PRIMARY KEY (user_id, book_id),
     FOREIGN KEY (book_id) REFERENCES books(id)
 );
+

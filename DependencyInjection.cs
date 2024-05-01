@@ -17,12 +17,15 @@ public static class DependencyInjection
     {
         //register repositories
         services.AddScoped<IBookRepository, BookRepository>();
-        services.AddSingleton<IDatabaseConfig, DatabaseConfig>();
-        
+        services.AddScoped<IOpenLibraryRepository, OpenLibraryRepository>();
+
         //register use cases
         services.AddScoped<GetAllBooksUseCase>();
+        services.AddScoped<AddBookUseCase>();
+        services.AddScoped<DeleteBookUseCase>();
 
         // Register facade
         services.AddScoped<IBookFacade, BookFacade>();
+        services.AddSingleton<IDatabaseConfig, DatabaseConfig>();
     }
 }

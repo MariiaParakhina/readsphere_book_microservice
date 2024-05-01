@@ -5,16 +5,24 @@ using Domains.Interfaces;
 
 namespace Core;
 
-public class BookFacade: IBookFacade
+public class BookFacade(
+    GetAllBooksUseCase getAllBooksUseCase,
+    AddBookUseCase addBookUseCase,
+    DeleteBookUseCase deleteBookUseCase)
+    : IBookFacade
 {
-    private readonly GetAllBooksUseCase _getAllBooksUseCase;
-
-    public BookFacade(GetAllBooksUseCase getAllBooksUseCase)
-    {
-        _getAllBooksUseCase = getAllBooksUseCase;
-    }
     public List<Book> GetAllBooks(int userId)
     {
-        return _getAllBooksUseCase.Execute(userId);
+        return getAllBooksUseCase.Execute(userId);
+    }
+
+    public async Task AddBook(int userId, Book book)
+    {
+        await addBookUseCase.Execute(userId, book);
+    }
+
+    public async Task DeleteBook(int userId, int bookId)
+    {
+        await deleteBookUseCase.Execute(userId, bookId);
     }
 }
