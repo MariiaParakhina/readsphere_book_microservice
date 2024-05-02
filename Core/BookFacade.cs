@@ -16,9 +16,9 @@ public class BookFacade(
         return getAllBooksUseCase.Execute(userId);
     }
 
-    public async Task AddBook(int userId, Book book)
+    public async Task<int> AddBook(int userId, Book book)
     {
-        await addBookUseCase.Execute(userId, book);
+        return await addBookUseCase.Execute(userId, book);
     }
 
     public async Task DeleteBook(int userId, int bookId)

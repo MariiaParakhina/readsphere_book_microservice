@@ -11,7 +11,7 @@ public class AddBookUseCase(IBookRepository bookRepository, IOpenLibraryReposito
     private readonly IOpenLibraryRepository _openLibraryRepository = openLibraryRepository;
 
 
-    public async Task Execute(int userId, Book book)
+    public async Task<int> Execute(int userId, Book book)
     {
         // verify that book exists in external api
         bool isBookExists = await _openLibraryRepository.VerifyBook(book);
@@ -28,5 +28,6 @@ public class AddBookUseCase(IBookRepository bookRepository, IOpenLibraryReposito
         bool isExistingConnection = await _bookRepository.VerifyBook(userId, bookId);
         if (isExistingConnection) throw new Exception("User already has added this book");
         await _bookRepository.AddUserBook(bookId, userId);
+        return bookId;
     }
 }

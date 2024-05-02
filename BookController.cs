@@ -1,4 +1,5 @@
 
+    using System.Text.Json;
     using Domains;
     using Domains.Interfaces;
     using Domains.Mappers;
@@ -8,7 +9,7 @@
 
     [Route("api/[controller]")]
     [ApiController]
-    public class BookController(IBookFacade bookFacade) : ControllerBase
+    public class BookController(IBookFacade bookFacade, IMessageQueueService messageQueueService) : ControllerBase
     {
         [HttpGet]
         [RequireHttps]
@@ -33,7 +34,11 @@
 
             try
             {
-                await bookFacade.AddBook(int.Parse(userId), book);
+                int bookId = await bookFacade.AddBook(int.Parse(userId), book);
+                //form message object
+                UserBookEncrypted userBookEncrypted = new UserBookEncrypted(int.Parse(userId), bookId);
+                // public message
+                messageQueueService.PublishMessage("create_book", JsonSerializer.Serialize(userBookEncrypted));
                 return Ok();
             }
             catch(Exception ex)

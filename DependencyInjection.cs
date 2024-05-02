@@ -16,6 +16,7 @@ public static class DependencyInjection
     private static void RegisterBookDependencies(IServiceCollection services)
     {
         //register repositories
+        services.AddScoped<IMessageQueueService, RabbitMqService>();
         services.AddScoped<IBookRepository, BookRepository>();
         services.AddScoped<IOpenLibraryRepository, OpenLibraryRepository>();
 
