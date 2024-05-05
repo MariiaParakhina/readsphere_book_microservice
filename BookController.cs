@@ -30,7 +30,7 @@
         public async Task<IActionResult> AddBook(Book book)
         {
             string userId = HttpContext.Request.Headers["X-User-Id"].ToString();
-            if (userId is null) return StatusCode(500, "User ID not provided");
+            if (userId.Equals(string.Empty)) return StatusCode(500, "User ID not provided");
 
             try
             {
