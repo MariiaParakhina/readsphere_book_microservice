@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: book-api
+  labels:
+    app: book-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: book-api
+  template:
+    metadata:
+      name: book-api
+      labels:
+        app: book-api
+    spec:
+      containers:
+        - name: book-api
+          image: mariia5345/readsphere_book-api:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 443
+              protocol: TCP
+      restartPolicy: Always
+      
