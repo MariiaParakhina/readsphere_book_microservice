@@ -1,15 +1,15 @@
 using Core;
 using Core.UseCases;
 using Domains;
-using Domains.Interfaces;
-using Infrastructure.DataProviders;
+using Domains.Interfaces; 
+using Infrastructure.DataProviders; 
 
 namespace BookService;
 
 public static class DependencyInjection
 {
     public static void ConfigureServices(IServiceCollection services)
-    { 
+    {
         RegisterBookDependencies(services);
     }
 

@@ -10,7 +10,7 @@ public class OpenLibraryRepository:IOpenLibraryRepository
     { 
         var client = new HttpClient();
         var url =
-            $"https://openlibrary.org/search.json?title={book.Title}&author_name={book.Author}&cover_i={book.Cover_ID}&fields=cover_i,title,author_name";
+            $"https://openlibrary.org/search.json?title={book.title}&author_name={book.author}&cover_i={book.coverid}&fields=cover_i,title,author_name";
         var response = await client.GetAsync(url);
       
         if (response.IsSuccessStatusCode)
@@ -19,7 +19,7 @@ public class OpenLibraryRepository:IOpenLibraryRepository
             var data = JsonSerializer.Deserialize<OpenLibraryRespone>(json);
             foreach (var item in data.docs)
             {
-                if (item.title == book.Title && item.cover_i == book.Cover_ID && item.author_name.Contains(book.Author))
+                if (item.title == book.title && item.cover_i == book.coverid && item.author_name.Contains(book.author))
                 {
                     return true;
                 }

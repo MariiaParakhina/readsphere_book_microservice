@@ -1,7 +1,9 @@
-using System.Net;
 using BookService;
+using Domains;
 using dotenv.net;
+using Infrastructure;
 using Microsoft.AspNetCore.Authentication.Certificate;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 DependencyInjection.ConfigureServices(builder.Services);
@@ -13,7 +15,7 @@ DependencyInjection.ConfigureServices(builder.Services);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddControllers();
 builder.Services.AddSwaggerGen();
- 
+
 builder.WebHost.ConfigureKestrel((context, options) =>
 {
     var certPath = "./cert/certificate.pfx";
@@ -45,7 +47,29 @@ builder.Services.AddCors((options) =>
                 .AllowAnyMethod();
         });
 });
-var app = builder.Build(); 
+
+
+builder.Services.AddDbContext<IBookDbContext, BookDbContext>(options =>
+{
+    options.UseNpgsql(
+        Environment.GetEnvironmentVariable("DATABASE_CONNECTION_STRING"),
+        b => b.MigrationsAssembly("BookService")
+    );
+});
+    
+var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<IBookDbContext>();
+
+    if (!dbContext.Database.CanConnect())
+    {
+        throw new NotImplementedException("Not able to connect");
+    }
+    
+    dbContext.Database.Migrate();
+}
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {

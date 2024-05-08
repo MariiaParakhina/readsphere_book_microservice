@@ -6,10 +6,10 @@ public static class BookMapper
     {
         return new BookDTO()
         {
-            ID = book.ID,
-            Author = book.Author,
-            Cover_ID = book.Cover_ID,
-            Title = book.Title
+            Id = book.id,
+            Author = book.author,
+            CoverId = book.coverid,
+            Title = book.title
         };
     }
 
@@ -17,10 +17,10 @@ public static class BookMapper
     {
         return new Book()
         {
-            ID = bookDto.ID,
-            Author = bookDto.Author,
-            Cover_ID = bookDto.Cover_ID,
-            Title = bookDto.Title
+            id = bookDto.Id,
+            author = bookDto.Author,
+            coverid = bookDto.CoverId,
+            title = bookDto.Title
         };
     }
     

@@ -9,8 +9,8 @@ public static class BookDataMapper
     {
         return new Book
         {
-            ID =  (int)reader["id"], Title = (string)reader["name"],
-            Author = (string)reader["author"], Cover_ID = (int)reader["cover_id"]
+            id =  (int)reader["Id"], title = (string)reader["Title"],
+            author = (string)reader["Author"], coverid = (int)reader["CoverId"]
         };
     }
 }
