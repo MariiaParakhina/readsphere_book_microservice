@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: book-api
+  namespace: book
   labels:
     app: book-api
 spec:
@@ -20,7 +21,7 @@ spec:
           image: mariia5345/readsphere_book-api:latest
           env:
             - name: DATABASE_CONNECTION_STRING
-              value: Host=postgres-service.default.svc.cluster.local;Port=5432;Database=book-api-db;Username=admin;Password=admin
+              value: Host=postgres-service.book.svc.cluster.local;Port=5432;Database=book-api-db;Username=admin;Password=admin
             - name: RABBITMQ_HOST
               value: rabbitmq3
             - name: RABBITMQ_USER
