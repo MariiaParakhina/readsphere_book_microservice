@@ -23,7 +23,7 @@ spec:
             - name: DATABASE_CONNECTION_STRING
               value: Host=postgres-service.book.svc.cluster.local;Port=5432;Database=book-api-db;Username=admin;Password=admin
             - name: RABBITMQ_HOST
-              value: rabbitmq3
+              value: rabbitmq3.default.svc.cluster.local
             - name: RABBITMQ_USER
               value: user
             - name: RABBITMQ_PASSWORD
@@ -32,5 +32,6 @@ spec:
           ports:
             - containerPort: 443
               protocol: TCP
-      restartPolicy: Always
-      
+      restartPolicy: Always      
+      imagePullSecrets:
+        - name: regcred       
