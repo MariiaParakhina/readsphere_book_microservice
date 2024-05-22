@@ -24,16 +24,34 @@
 
             return Ok(bookDtos);
         }
+        
+        
+        [HttpGet("{bookId}")]
+        [RequireHttps]
+        public async Task< IActionResult> GetBookById(int bookId)
+        {
+            string userId = HttpContext.Request.Headers["X-User-Id"].ToString();
+            if (userId is null) return StatusCode(500, "User ID not provided");
+            Book book = await bookFacade.GetBookById(int.Parse(userId), bookId);
+
+            // Map domain entities to DTOs
+            var bookDto =  BookMapper.MapDTO(book);
+
+            return Ok(bookDto);
+        }
 
         [HttpPost]
         [RequireHttps]
         public async Task<IActionResult> AddBook(Book book)
         {
+            Console.WriteLine("Im in controller");
+            Console.WriteLine($"Book data {book.coverid}");
             string userId = HttpContext.Request.Headers["X-User-Id"].ToString();
             if (userId.Equals(string.Empty)) return StatusCode(500, "User ID not provided");
-
+            Console.WriteLine("I got user id");
             try
             {
+                Console.WriteLine("About to add book");
                 int bookId = await bookFacade.AddBook(int.Parse(userId), book);
                 //form message object
                 UserBookEncrypted userBookEncrypted = new UserBookEncrypted(int.Parse(userId), bookId);
@@ -56,6 +74,7 @@
 
             try
             {
+                
                 await bookFacade.DeleteBook(int.Parse(userId), bookId);
                 return Ok();
             }

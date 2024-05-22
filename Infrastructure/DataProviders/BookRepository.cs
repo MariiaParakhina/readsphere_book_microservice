@@ -80,9 +80,41 @@ public class BookRepository : IBookRepository
         }
     }
 
+    public async Task<Book> GetBook(int userId, int bookId)
+    {
+        var connectionString = _databaseConfig.GetConnectionString(); 
+        var sql = "SELECT books.* FROM books JOIN user_book ON books.Id = user_book.BookId" +
+                  " WHERE user_book.UserId = @userId AND books.Id = @bookId;"; 
+
+        using (var conn = new NpgsqlConnection(connectionString))
+        {
+            conn.Open();
+            using (var cmd = new NpgsqlCommand(sql, conn))
+            {
+                cmd.Parameters.AddWithValue("userId", userId);
+                cmd.Parameters.AddWithValue("bookId", bookId);
+                using (var reader = await cmd.ExecuteReaderAsync())
+                { 
+                    if (reader.Read())
+                    {
+                        //using mapper to the element
+                        var book = BookDataMapper.map(reader);
+                        return book;
+                    }
+                    else
+                    {
+                        throw new Exception("No such book found for the user.");
+                    }
+                }
+            }
+        }
+    }
+
+
     // add book to db return id
     public async Task<int> AddBook(BookDTO bookDto)
     {
+        Console.Write("In reposirtoy adding");
         var connectionString = _databaseConfig.GetConnectionString(); 
         var sql = "INSERT INTO books (CoverId, Title, Author) VALUES (@coverId, @name, @author) RETURNING Id;"; 
 
@@ -96,6 +128,7 @@ public class BookRepository : IBookRepository
                 cmd.Parameters.AddWithValue("name", bookDto.Title);
                 cmd.Parameters.AddWithValue("author", bookDto.Author);
                 var id = (int) await cmd.ExecuteScalarAsync();
+                Console.Write("In reposirtoy added");
                 return id;
             }
         }
@@ -143,4 +176,22 @@ public class BookRepository : IBookRepository
             }
         }
     }
+
+   public async Task DeleteUserData(int userId)
+   {
+       // Delete user-book connections
+       var connectionString = _databaseConfig.GetConnectionString(); 
+       var sql = "DELETE FROM user_book WHERE UserId = @userId;"; 
+   
+       using (var conn = new NpgsqlConnection(connectionString))
+       {
+           conn.Open();
+           using (var cmd = new NpgsqlCommand(sql, conn))
+           {
+               cmd.Parameters.AddWithValue("userId", userId);
+               await cmd.ExecuteNonQueryAsync();
+           }
+       }
+   }
+
 }

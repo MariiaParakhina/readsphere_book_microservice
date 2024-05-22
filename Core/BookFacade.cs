@@ -8,7 +8,8 @@ namespace Core;
 public class BookFacade(
     GetAllBooksUseCase getAllBooksUseCase,
     AddBookUseCase addBookUseCase,
-    DeleteBookUseCase deleteBookUseCase)
+    DeleteBookUseCase deleteBookUseCase,
+    GetBookByIdUseCase getBookByIdUseCase)
     : IBookFacade
 {
     public List<Book> GetAllBooks(int userId)
@@ -24,5 +25,10 @@ public class BookFacade(
     public async Task DeleteBook(int userId, int bookId)
     {
         await deleteBookUseCase.Execute(userId, bookId);
+    }
+
+    public async Task<Book> GetBookById(int userId, int bookId)
+    {
+        return await getBookByIdUseCase.Execute(userId, bookId);
     }
 }

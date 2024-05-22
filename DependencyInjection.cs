@@ -24,6 +24,7 @@ public static class DependencyInjection
         services.AddScoped<GetAllBooksUseCase>();
         services.AddScoped<AddBookUseCase>();
         services.AddScoped<DeleteBookUseCase>();
+        services.AddScoped<GetBookByIdUseCase>();
 
         // Register facade
         services.AddScoped<IBookFacade, BookFacade>();
