@@ -76,6 +76,12 @@
             {
                 
                 await bookFacade.DeleteBook(int.Parse(userId), bookId);
+                // send message to delete book for the user in progress service
+                UserBookEncrypted userBookEncrypted = new UserBookEncrypted(int.Parse(userId), bookId);
+                
+                messageQueueService.PublishMessage("delete_book_queue", 
+                    JsonSerializer.Serialize(userBookEncrypted));
+                
                 return Ok();
             }
             catch (Exception ex)

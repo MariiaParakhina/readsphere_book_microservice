@@ -1,42 +1,54 @@
 using Domains;
 using Domains.Interfaces;
-using Infrastructure.Mappers; 
+using Infrastructure.Mappers;
+using Microsoft.Extensions.Caching.Memory;
 using Npgsql;
 
 namespace Infrastructure.DataProviders;
 public class BookRepository : IBookRepository
 { 
     private readonly IDatabaseConfig _databaseConfig;
+    private readonly IMemoryCache _cache;
 
-    public BookRepository(IDatabaseConfig databaseConfig)
+    public BookRepository(IDatabaseConfig databaseConfig, IMemoryCache cache)
     {
         _databaseConfig = databaseConfig;
+        _cache = cache;
     }
+  
     public List<Book> GetBooks(int userId)
     {
-        List<Book> data = new List<Book>();
-        var connectionString = _databaseConfig.GetConnectionString(); 
-        var sql = "SELECT books.* FROM books JOIN user_book ON books.Id = user_book.BookId" +
-                  " WHERE user_book.UserId = @userID;"; 
-   Console.WriteLine(connectionString);
-        using (var conn = new NpgsqlConnection(connectionString))
+        if (!_cache.TryGetValue($"BooksForUser{userId}", out List<Book> data))
         {
-            conn.Open();
- 
-            using (var cmd = new NpgsqlCommand(sql, conn))
+            data = new List<Book>();
+            var connectionString = _databaseConfig.GetConnectionString();
+            var sql = "SELECT books.* FROM books JOIN user_book ON books.Id = user_book.BookId" +
+                      " WHERE user_book.UserId = @userID;";
+
+            using (var conn = new NpgsqlConnection(connectionString))
             {
-                cmd.Parameters.AddWithValue("userID", userId);
-                using (var reader = cmd.ExecuteReader())
-                { 
-                    while (reader.Read())
+                conn.Open();
+
+                using (var cmd = new NpgsqlCommand(sql, conn))
+                {
+                    cmd.Parameters.AddWithValue("userID", userId);
+                    using (var reader = cmd.ExecuteReader())
                     {
-                       //using mapper to the element
-                       var book = BookDataMapper.map(reader);
-                       data.Add(book);
+                        while (reader.Read())
+                        {
+                            var book = BookDataMapper.map(reader);
+                            data.Add(book);
+                        }
                     }
                 }
             }
+
+            var cacheEntryOptions = new MemoryCacheEntryOptions()
+                .SetSlidingExpiration(TimeSpan.FromMinutes(5)); // Cache for 5 minutes
+
+            _cache.Set($"BooksForUser{userId}", data, cacheEntryOptions);
         }
+
         return data;
     }
 
@@ -84,14 +96,13 @@ public class BookRepository : IBookRepository
     {
         var connectionString = _databaseConfig.GetConnectionString(); 
         var sql = "SELECT books.* FROM books JOIN user_book ON books.Id = user_book.BookId" +
-                  " WHERE user_book.UserId = @userId AND books.Id = @bookId;"; 
+                  " WHERE books.Id = @bookId;"; 
 
         using (var conn = new NpgsqlConnection(connectionString))
         {
             conn.Open();
             using (var cmd = new NpgsqlCommand(sql, conn))
-            {
-                cmd.Parameters.AddWithValue("userId", userId);
+            { 
                 cmd.Parameters.AddWithValue("bookId", bookId);
                 using (var reader = await cmd.ExecuteReaderAsync())
                 { 
@@ -158,7 +169,8 @@ public class BookRepository : IBookRepository
     {
         // delete user book connection, throw error if there is no such connection
         var connectionString = _databaseConfig.GetConnectionString(); 
-        var sql = "DELETE FROM user_book WHERE UserId = @userId AND BookId = @bookId;"; 
+        var sql = "DELETE FROM user_book WHERE UserId = @userId AND" +
+                  " BookId = @bookId;"; 
 
         using (var conn = new NpgsqlConnection(connectionString))
         {
@@ -181,10 +193,13 @@ public class BookRepository : IBookRepository
    {
        // Delete user-book connections
        var connectionString = _databaseConfig.GetConnectionString(); 
-       var sql = "DELETE FROM user_book WHERE UserId = @userId;"; 
+       Console.WriteLine(connectionString);
+       Console.WriteLine(userId);
+       var sql = "DELETE FROM user_book WHERE userid = @userId;"; 
    
        using (var conn = new NpgsqlConnection(connectionString))
        {
+           Console.WriteLine("Connection to delete is open");
            conn.Open();
            using (var cmd = new NpgsqlCommand(sql, conn))
            {

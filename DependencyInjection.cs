@@ -2,7 +2,8 @@ using Core;
 using Core.UseCases;
 using Domains;
 using Domains.Interfaces; 
-using Infrastructure.DataProviders; 
+using Infrastructure.DataProviders;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace BookService;
 
@@ -25,7 +26,10 @@ public static class DependencyInjection
         services.AddScoped<AddBookUseCase>();
         services.AddScoped<DeleteBookUseCase>();
         services.AddScoped<GetBookByIdUseCase>();
+        services.AddScoped<DeleteUserDataUseCase>();
+        services.AddScoped<IMemoryCache, MemoryCache>();
 
+        services.AddHostedService<DeleteUserBackgroundService>();
         // Register facade
         services.AddScoped<IBookFacade, BookFacade>();
         services.AddSingleton<IDatabaseConfig, DatabaseConfig>();
