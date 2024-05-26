@@ -2,6 +2,7 @@ using Domains.Interfaces;
 using Microsoft.Extensions.Configuration;
 
 namespace Domains;
+
 public class DatabaseConfig : IDatabaseConfig
 {
     private readonly IConfiguration _configuration;

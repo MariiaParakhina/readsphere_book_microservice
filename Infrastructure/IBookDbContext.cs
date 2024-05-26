@@ -8,9 +8,9 @@ public interface IBookDbContext
 {
     DbSet<Book> Books { get; set; }
     DbSet<UserBook> UserBooks { get; set; }
-    
+
     DatabaseFacade Database { get; }
-    
+
     Task<int> SaveChangesAsync
         (CancellationToken cancellationToken = default);
 }

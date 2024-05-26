@@ -2,8 +2,8 @@ namespace Domains;
 
 public class UserBookEncrypted
 {
-    public byte[] UserId { get; set; }
-    public byte[] BookId { get; set; }
+    private byte[] UserId { get; set; }
+    private byte[] BookId { get; set; }
 
     public UserBookEncrypted(int userId, int bookId)
     {
