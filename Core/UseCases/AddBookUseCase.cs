@@ -1,31 +1,36 @@
 using Domains;
 using Domains.Interfaces;
 using Domains.Mappers;
+using Infrastructure.Mappers;
 
 namespace Core.UseCases;
 
-public class AddBookUseCase(IBookRepository bookRepository, IOpenLibraryRepository openLibraryRepository)
-    : IAddBookUseCase
+public class AddBookUseCase(IBookRepository bookRepository, IOpenLibraryRepository openLibraryRepository) : IAddBookUseCase
 {
+    private readonly IBookRepository _bookRepository = bookRepository;
+    private readonly IOpenLibraryRepository _openLibraryRepository = openLibraryRepository;
+
 
     public async Task<int> Execute(int userId, Book book)
-    { 
+    {
+        Console.WriteLine("Checking if book exists");
         // verify that book exists in external api
-        var isBookExists = await openLibraryRepository.VerifyBook(book);
+        bool isBookExists = await _openLibraryRepository.VerifyBook(book);
         if (!isBookExists) throw new Exception("Book does not exists originally");
-
+        
         // check if book in books
-        var bookDto = BookMapper.MapDTO(book);
-        int bookId = (int)(await bookRepository.VerifyBook(bookDto))!;
+        BookDTO bookDto = BookMapper.MapDTO(book);
+        int  bookId = await _bookRepository.VerifyBook(bookDto); 
         if (bookId == 0)
-        { 
-            bookId = (int)(await bookRepository.AddBook(bookDto))!;
+        {
+            Console.WriteLine("Adding book");
+            bookId = await  _bookRepository.AddBook(bookDto);
         }
- 
+        Console.WriteLine("Added book");
         // check user book connection
-        var isExistingConnection = await bookRepository.VerifyBook(userId, bookId);
+        bool isExistingConnection = await _bookRepository.VerifyBook(userId, bookId);
         if (isExistingConnection) throw new Exception("User already has added this book");
-        await bookRepository.AddUserBook(bookId, userId);
+        await _bookRepository.AddUserBook(bookId, userId);
         return bookId;
     }
 }

@@ -4,17 +4,15 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure;
 
-public class BookDbContext : DbContext, IBookDbContext
+public class BookDbContext:DbContext, IBookDbContext
 {
-    public BookDbContext(DbContextOptions<BookDbContext> options) : base(options)
+    public BookDbContext(DbContextOptions<BookDbContext> options):base(options)
     {
-        Books = Set<Book>();
-        UserBooks = Set<UserBook>();
     }
 
     public DbSet<Book> Books { get; set; }
     public DbSet<UserBook> UserBooks { get; set; }
-
+    
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfigurationsFromAssembly(
@@ -23,4 +21,5 @@ public class BookDbContext : DbContext, IBookDbContext
 
         base.OnModelCreating(modelBuilder);
     }
+     
 }

@@ -2,7 +2,7 @@ namespace Domains;
 
 public class BookApiEntity
 {
-    public string? title { get; private set; }
-    public int cover_i { get; private set; }
-    public string[]? author_name { get; private set; }
+    public string title { get; set; }
+    public int cover_i { get; set; }
+    public string[] author_name { get; set; } 
 }

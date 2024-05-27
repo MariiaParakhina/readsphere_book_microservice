@@ -32,6 +32,6 @@ spec:
           ports:
             - containerPort: 443
               protocol: TCP
-      restartPolicy: Always
+      restartPolicy: Always      
       imagePullSecrets:
         - name: regcred       

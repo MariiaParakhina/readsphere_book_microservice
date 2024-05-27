@@ -30,8 +30,3 @@ Desktop.ini
 *.suo
 *.user
 *.sln.docstates
-cert/certificate.pfx
-cert/domain.crt
-cert/domain.csr
-cert/domain.key
-cert/private_key.pem

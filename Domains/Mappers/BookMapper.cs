@@ -2,9 +2,9 @@ namespace Domains.Mappers;
 
 public static class BookMapper
 {
-    public static BookDto MapDTO(Book book)
+    public static BookDTO MapDTO(Book book)
     {
-        return new BookDto()
+        return new BookDTO()
         {
             Id = book.id,
             Author = book.author,
@@ -13,7 +13,7 @@ public static class BookMapper
         };
     }
 
-    public static Book MapDTO(BookDto bookDto)
+    public static Book MapDTO(BookDTO bookDto)
     {
         return new Book()
         {
@@ -23,4 +23,5 @@ public static class BookMapper
             title = bookDto.Title
         };
     }
+    
 }
