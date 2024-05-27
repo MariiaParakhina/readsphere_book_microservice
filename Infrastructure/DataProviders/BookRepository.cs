@@ -13,8 +13,8 @@ public class BookRepository : IBookRepository
 
     public BookRepository(IDatabaseConfig databaseConfig, IMemoryCache cache)
     {
-        _databaseConfig = databaseConfig ?? throw new ArgumentNullException(nameof(databaseConfig));
-        _cache = cache ?? throw new ArgumentNullException(nameof(cache));
+        _databaseConfig = databaseConfig;
+        _cache = cache;
     }
 
     public List<Book> GetBooks(int userId)
@@ -92,7 +92,7 @@ public class BookRepository : IBookRepository
         }
     }
 
-    public async Task<Book> GetBook(int userId, int bookId)
+    public async Task<Book?> GetBook(int userId, int bookId)
     {
         var connectionString = _databaseConfig.GetConnectionString();
         var sql = "SELECT books.* FROM books JOIN user_book ON books.Id = user_book.BookId" +
@@ -110,7 +110,7 @@ public class BookRepository : IBookRepository
                     {
                         //using mapper to the element
                         var book = BookDataMapper.map(reader);
-                        return book ?? throw new Exception("No such book found for the user.");
+                        return book;
                     }
                     else
                     {
