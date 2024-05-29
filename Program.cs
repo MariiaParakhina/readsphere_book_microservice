@@ -19,7 +19,7 @@ builder.Services.AddSwaggerGen();
 builder.WebHost.ConfigureKestrel((context, options) =>
 {
     var certPath = "./cert/certificate.pfx";
-    options.ListenAnyIP(443, listenOptions =>
+    options.ListenAnyIP(1026, listenOptions =>
     {
         listenOptions.UseHttps(certPath, "pass");
     });
