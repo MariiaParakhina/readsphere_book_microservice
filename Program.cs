@@ -4,6 +4,8 @@ using dotenv.net;
 using Infrastructure;
 using Microsoft.AspNetCore.Authentication.Certificate;
 using Microsoft.EntityFrameworkCore;
+using OpenTelemetry.Metrics;
+using OpenTelemetry.Resources;
 
 var builder = WebApplication.CreateBuilder(args);
 DependencyInjection.ConfigureServices(builder.Services);
@@ -24,6 +26,46 @@ builder.WebHost.ConfigureKestrel((context, options) =>
         listenOptions.UseHttps(certPath, "pass");
     });
 });
+
+
+#region monitoring
+
+builder.Services.AddOpenTelemetry().WithMetrics(opts => opts
+    .SetResourceBuilder(ResourceBuilder.CreateDefault().AddService("BookService"))
+    .AddMeter("book-service")
+    .AddAspNetCoreInstrumentation()
+    .AddRuntimeInstrumentation()
+    .AddProcessInstrumentation()
+    .AddOtlpExporter(otlpExporterOptions =>
+    {
+        otlpExporterOptions.Endpoint = new Uri(Environment.GetEnvironmentVariable("PROMETHEUS_URL"));
+    })
+    .AddPrometheusExporter() );   
+
+// builder.Services.AddOpenTelemetry()
+//     .WithMetrics(builder =>
+//     {
+//         builder.AddPrometheusExporter();
+//
+//         builder.AddMeter(
+//             "Microsoft.AspNetCore.Hosting",
+//             "Microsoft.AspNetCore.Http.Connections",
+//             "Microsoft.AspNetCore.Routing",
+//             "Microsoft.AspNetCore.Diagnostics",
+//             "Microsoft.AspNetCore.RateLimiting",
+//             "Microsoft.AspNetCore.Server.Kestrel", 
+//             "AccountMeterName");
+//         builder.AddView("http-server-request-duration",
+//             new ExplicitBucketHistogramConfiguration
+//             {
+//                 Boundaries = new double[] { 0, 0.005, 0.01, 0.025, 0.05,
+//                     0.075, 0.1, 0.25, 0.5, 0.75, 1, 2.5, 5, 7.5, 10 }
+//             });
+//         builder.AddMeter("AccountMeterName");
+//     });
+
+
+#endregion
 
 builder.Services.AddAuthentication(CertificateAuthenticationDefaults.AuthenticationScheme)
     .AddCertificate(options =>

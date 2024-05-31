@@ -28,6 +28,7 @@ public static class DependencyInjection
         services.AddScoped<GetBookByIdUseCase>();
         services.AddScoped<DeleteUserDataUseCase>();
         services.AddScoped<IMemoryCache, MemoryCache>();
+        services.AddScoped<IBookMetrics, BookMetrics>();
 
         services.AddHostedService<DeleteUserBackgroundService>();
         // Register facade

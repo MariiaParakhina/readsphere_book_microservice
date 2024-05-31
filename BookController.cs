@@ -4,17 +4,19 @@
     using Domains.Interfaces;
     using Domains.Mappers;
     using Microsoft.AspNetCore.Mvc;
+    using Prometheus;
 
     namespace BookService;
 
     [Route("api/[controller]")]
     [ApiController]
-    public class BookController(IBookFacade bookFacade, IMessageQueueService messageQueueService) : ControllerBase
+    public class BookController(IBookFacade bookFacade, IMessageQueueService messageQueueService, IBookMetrics bookMetrics) : ControllerBase
     {
         [HttpGet]
         [RequireHttps]
         public IActionResult GetAllBooks()
         {
+            bookMetrics.AddRequest();
             string userId = HttpContext.Request.Headers["X-User-Id"].ToString();
             if (userId is null) return StatusCode(500, "User ID not provided");
             List<Book> books = bookFacade.GetAllBooks(int.Parse(userId));
@@ -30,6 +32,7 @@
         [RequireHttps]
         public async Task< IActionResult> GetBookById(int bookId)
         {
+            bookMetrics.AddRequest();
             string userId = HttpContext.Request.Headers["X-User-Id"].ToString();
             if (userId is null) return StatusCode(500, "User ID not provided");
             Book book = await bookFacade.GetBookById(int.Parse(userId), bookId);
@@ -44,6 +47,7 @@
         [RequireHttps]
         public async Task<IActionResult> AddBook(Book book)
         {
+            bookMetrics.AddRequest();
             Console.WriteLine("Im in controller");
             Console.WriteLine($"Book data {book.coverid}");
             string userId = HttpContext.Request.Headers["X-User-Id"].ToString();
@@ -69,6 +73,7 @@
         [RequireHttps]
         public async Task<IActionResult> DeleteBook(int bookId)
         {
+            bookMetrics.AddRequest();
             string userId = HttpContext.Request.Headers["X-User-Id"].ToString();
             if (userId is null) return StatusCode(500, "User ID not provided");
 
@@ -88,5 +93,16 @@
             {
                 return StatusCode(500, ex.Message);
             }
+        }
+        [HttpGet("metrics")]
+        public async Task<IActionResult> GetMetrics()
+        {
+            bookMetrics.AddRequest();
+            var stream = new MemoryStream();
+            await Metrics.DefaultRegistry.CollectAndExportAsTextAsync(stream);
+            stream.Position = 0;
+            using var reader = new StreamReader(stream);
+            var metrics = await reader.ReadToEndAsync();
+            return Content(metrics, "text/plain; version=0.0.4");
         }
     }

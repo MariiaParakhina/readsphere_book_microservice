@@ -91,6 +91,7 @@ using System;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using BookService;
 using Core;
 using Core.UseCases;
 using Microsoft.Extensions.Hosting;
@@ -105,8 +106,9 @@ public class DeleteUserBackgroundService : BackgroundService
     private readonly object _lock = new();
     private IConnection? _connection;
     private IModel? _channel;
+    private IBookMetrics _bookMetrics;
 
-    public DeleteUserBackgroundService(IServiceProvider serviceProvider)
+    public DeleteUserBackgroundService(IServiceProvider serviceProvider, IBookMetrics bookMetrics)
     {
         _factory = new ConnectionFactory
         {
@@ -116,6 +118,7 @@ public class DeleteUserBackgroundService : BackgroundService
             Password = Environment.GetEnvironmentVariable("RABBITMQ_PASSWORD")
         };
         _serviceProvider = serviceProvider;
+        _bookMetrics = bookMetrics;
     }
 
     protected async override Task ExecuteAsync(CancellationToken stoppingToken)
@@ -139,6 +142,7 @@ public class DeleteUserBackgroundService : BackgroundService
    
                    try
                    {
+                       _bookMetrics.AddRequest();
                        await ProcessMessage(ea);
                    }
                    catch (Exception ex)
