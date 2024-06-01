@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authentication.Certificate;
 using Microsoft.EntityFrameworkCore;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
+using Prometheus;
 
 var builder = WebApplication.CreateBuilder(args);
 DependencyInjection.ConfigureServices(builder.Services);
@@ -113,4 +114,5 @@ app.Use(async (context, next) =>
     await next();
 });
 app.MapControllers();
+app.MapMetrics();
 app.Run();
