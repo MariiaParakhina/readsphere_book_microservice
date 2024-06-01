@@ -94,15 +94,5 @@
                 return StatusCode(500, ex.Message);
             }
         }
-        [HttpGet("metrics")]
-        public async Task<IActionResult> GetMetrics()
-        {
-            bookMetrics.AddRequest();
-            var stream = new MemoryStream();
-            await Metrics.DefaultRegistry.CollectAndExportAsTextAsync(stream);
-            stream.Position = 0;
-            using var reader = new StreamReader(stream);
-            var metrics = await reader.ReadToEndAsync();
-            return Content(metrics, "text/plain; version=0.0.4");
-        }
+
     }
