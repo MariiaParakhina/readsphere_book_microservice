@@ -18,7 +18,7 @@ DependencyInjection.ConfigureServices(builder.Services);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddControllers();
 builder.Services.AddSwaggerGen();
-
+builder.Services.AddResponseCompression();
 builder.WebHost.ConfigureKestrel((context, options) =>
 {
     var certPath = "./cert/certificate.pfx";
