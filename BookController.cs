@@ -48,8 +48,6 @@
         public async Task<IActionResult> AddBook(Book book)
         {
             bookMetrics.AddRequest();
-            Console.WriteLine("Im in controller");
-            Console.WriteLine($"Book data {book.coverid}");
             string userId = HttpContext.Request.Headers["X-User-Id"].ToString();
             if (userId.Equals(string.Empty)) return StatusCode(500, "User ID not provided");
             Console.WriteLine("I got user id");
@@ -61,7 +59,7 @@
                 UserBookEncrypted userBookEncrypted = new UserBookEncrypted(int.Parse(userId), bookId);
                 // public message
                 messageQueueService.PublishMessage("create_book", JsonSerializer.Serialize(userBookEncrypted));
-                return Ok();
+                return Ok(bookId);
             }
             catch(Exception ex)
             {
