@@ -34,6 +34,7 @@
       <Compile Remove="Core\**" />
       <Compile Remove="Infrastructure\**" />
       <Compile Remove="Domains\**" />
+      <Compile Remove="BookTests\**" />
     </ItemGroup>
 
     <ItemGroup>
@@ -41,6 +42,7 @@
       <EmbeddedResource Remove="Core\**" />
       <EmbeddedResource Remove="Infrastructure\**" />
       <EmbeddedResource Remove="Domains\**" />
+      <EmbeddedResource Remove="BookTests\**" />
     </ItemGroup>
 
     <ItemGroup>
@@ -48,6 +50,7 @@
       <Content Remove="Core\**" />
       <Content Remove="Infrastructure\**" />
       <Content Remove="Domains\**" />
+      <Content Remove="BookTests\**" />
     </ItemGroup>
 
     <ItemGroup>
@@ -55,6 +58,7 @@
       <None Remove="Core\**" />
       <None Remove="Infrastructure\**" />
       <None Remove="Domains\**" />
+      <None Remove="BookTests\**" />
     </ItemGroup>
 
     <ItemGroup>
@@ -70,6 +74,9 @@
       <_ContentIncludedByDefault Remove="Domains\obj\Domains.csproj.nuget.dgspec.json" />
       <_ContentIncludedByDefault Remove="Domains\obj\project.assets.json" />
       <_ContentIncludedByDefault Remove="Domains\obj\project.packagespec.json" />
+      <_ContentIncludedByDefault Remove="BookTests\obj\BookTests.csproj.nuget.dgspec.json" />
+      <_ContentIncludedByDefault Remove="BookTests\obj\project.assets.json" />
+      <_ContentIncludedByDefault Remove="BookTests\obj\project.packagespec.json" />
     </ItemGroup>
 
     <ItemGroup>
