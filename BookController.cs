@@ -17,9 +17,10 @@
         public IActionResult GetAllBooks()
         {
             bookMetrics.AddRequest();
-            string userId = HttpContext.Request.Headers["X-User-Id"].ToString();
-            if (userId is null) return StatusCode(500, "User ID not provided");
-            List<Book> books = bookFacade.GetAllBooks(int.Parse(userId));
+            string userIdStr = HttpContext.Request.Headers["X-User-Id"].ToString();
+            if (userIdStr is null) return StatusCode(500, "User ID not provided");
+            int userId = int.Parse(userIdStr);
+            List<Book> books = bookFacade.GetAllBooks(userId);
 
             // Map domain entities to DTOs
             var bookDtos = books.Select(BookMapper.MapDTO);
@@ -33,9 +34,10 @@
         public async Task< IActionResult> GetBookById(int bookId)
         {
             bookMetrics.AddRequest();
-            string userId = HttpContext.Request.Headers["X-User-Id"].ToString();
-            if (userId is null) return StatusCode(500, "User ID not provided");
-            Book book = await bookFacade.GetBookById(int.Parse(userId), bookId);
+            string userIdStr = HttpContext.Request.Headers["X-User-Id"].ToString();
+            if (userIdStr is null) return StatusCode(500, "User ID not provided");
+            int userId = int.Parse(userIdStr);
+            Book book = await bookFacade.GetBookById(userId, bookId);
 
             // Map domain entities to DTOs
             var bookDto =  BookMapper.MapDTO(book);
@@ -48,15 +50,15 @@
         public async Task<IActionResult> AddBook(Book book)
         {
             bookMetrics.AddRequest();
-            string userId = HttpContext.Request.Headers["X-User-Id"].ToString();
-            if (userId.Equals(string.Empty)) return StatusCode(500, "User ID not provided");
-            Console.WriteLine("I got user id");
+            string userIdStr = HttpContext.Request.Headers["X-User-Id"].ToString();
+            if (userIdStr is null) return StatusCode(500, "User ID not provided");
+            int userId = int.Parse(userIdStr); 
             try
             {
                 Console.WriteLine("About to add book");
-                int bookId = await bookFacade.AddBook(int.Parse(userId), book);
+                int bookId = await bookFacade.AddBook(userId, book);
                 //form message object
-                UserBookEncrypted userBookEncrypted = new UserBookEncrypted(int.Parse(userId), bookId);
+                UserBookEncrypted userBookEncrypted = new UserBookEncrypted(userId, bookId);
                 // public message
                 messageQueueService.PublishMessage("create_book", JsonSerializer.Serialize(userBookEncrypted));
                 return Ok(bookId);
@@ -72,15 +74,16 @@
         public async Task<IActionResult> DeleteBook(int bookId)
         {
             bookMetrics.AddRequest();
-            string userId = HttpContext.Request.Headers["X-User-Id"].ToString();
-            if (userId is null) return StatusCode(500, "User ID not provided");
+            string userIdStr = HttpContext.Request.Headers["X-User-Id"].ToString();
+            if (userIdStr is null) return StatusCode(500, "User ID not provided");
+            int userId = int.Parse(userIdStr);
 
             try
             {
                 
-                await bookFacade.DeleteBook(int.Parse(userId), bookId);
+                await bookFacade.DeleteBook(userId, bookId);
                 // send message to delete book for the user in progress service
-                UserBookEncrypted userBookEncrypted = new UserBookEncrypted(int.Parse(userId), bookId);
+                UserBookEncrypted userBookEncrypted = new UserBookEncrypted(userId, bookId);
                 
                 messageQueueService.PublishMessage("delete_book_queue", 
                     JsonSerializer.Serialize(userBookEncrypted));

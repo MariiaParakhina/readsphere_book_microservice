@@ -115,4 +115,5 @@ app.Use(async (context, next) =>
 });
 app.MapControllers();
 app.MapMetrics();
+app.UseResponseCompression();
 app.Run();
