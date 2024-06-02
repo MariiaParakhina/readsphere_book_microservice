@@ -14,15 +14,16 @@ public class AddBookUseCase(IBookRepository bookRepository, IOpenLibraryReposito
     public async Task<int> Execute(int userId, Book book)
     {
         Console.WriteLine("Checking if book exists");
-        // verify that book exists in external api
-        bool isBookExists = await _openLibraryRepository.VerifyBook(book);
-        if (!isBookExists) throw new Exception("Book does not exists originally");
         
         // check if book in books
         BookDTO bookDto = BookMapper.MapDTO(book);
         int  bookId = await _bookRepository.VerifyBook(bookDto); 
+        
         if (bookId == 0)
         {
+            // verify that book exists in external api
+            bool isBookExists = await _openLibraryRepository.VerifyBook(book);
+            if (!isBookExists) throw new Exception("Book does not exists originally");
             Console.WriteLine("Adding book");
             bookId = await  _bookRepository.AddBook(bookDto);
         }
