@@ -11,8 +11,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BookService.Migrations
 {
     [DbContext(typeof(BookDbContext))]
-    [Migration("20240520142103_New")]
-    partial class New
+    [Migration("20240611155117_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -60,6 +60,11 @@ namespace BookService.Migrations
 
                     b.Property<int>("bookid")
                         .HasColumnType("integer");
+
+                    b.Property<bool>("ishidden")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(false);
 
                     b.HasKey("userid", "bookid");
 

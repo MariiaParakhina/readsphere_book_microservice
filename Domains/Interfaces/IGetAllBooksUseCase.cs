@@ -3,5 +3,5 @@ namespace Domains.Interfaces;
 
 public interface IGetAllBooksUseCase
 {
-    List<Book> Execute(int userId);
+    List<BookEntity> Execute(int userId);
 }

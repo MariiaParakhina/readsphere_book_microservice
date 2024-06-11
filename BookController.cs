@@ -20,7 +20,7 @@
             string userIdStr = HttpContext.Request.Headers["X-User-Id"].ToString();
             if (userIdStr is null) return StatusCode(500, "User ID not provided");
             int userId = int.Parse(userIdStr);
-            List<Book> books = bookFacade.GetAllBooks(userId);
+            List<BookEntity> books = bookFacade.GetAllBooks(userId);
 
             // Map domain entities to DTOs
             var bookDtos = books.Select(BookMapper.MapDTO);
@@ -37,10 +37,10 @@
             string userIdStr = HttpContext.Request.Headers["X-User-Id"].ToString();
             if (userIdStr is null) return StatusCode(500, "User ID not provided");
             int userId = int.Parse(userIdStr);
-            Book book = await bookFacade.GetBookById(userId, bookId);
-
+            BookEntity book = await bookFacade.GetBookById(userId, bookId);
+            Console.WriteLine(book.isHidden);
             // Map domain entities to DTOs
-            var bookDto =  BookMapper.MapDTO(book);
+            BookDTO bookDto =  BookMapper.MapDTO(book);
 
             return Ok(bookDto);
         }
@@ -95,5 +95,22 @@
                 return StatusCode(500, ex.Message);
             }
         }
-
+        [HttpPut("{bookId}")]
+        [RequireHttps]
+        public async Task<IActionResult> UpdateBookPrivacy(UpdateBookPrivacyRequest updateBookPrivacyRequest, int bookId)
+        {
+            bookMetrics.AddRequest();
+            string userIdStr = HttpContext.Request.Headers["X-User-Id"].ToString();
+            if (userIdStr is null) return StatusCode(500, "User ID not provided");
+            int userId = int.Parse(userIdStr);
+            try
+            { 
+                await bookFacade.UpdateBookPrivacy(userId, bookId, updateBookPrivacyRequest.IsHidden); 
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
     }

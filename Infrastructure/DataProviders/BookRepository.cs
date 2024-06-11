@@ -16,13 +16,13 @@ public class BookRepository : IBookRepository
         _cache = cache;
     }
   
-    public List<Book> GetBooks(int userId)
+    public List<BookEntity> GetBooks(int userId)
     {
-        if (!_cache.TryGetValue($"BooksForUser{userId}", out List<Book> data))
+        if (!_cache.TryGetValue($"BooksForUser{userId}", out List<BookEntity> data))
         {
-            data = new List<Book>();
+            data = new List<BookEntity>();
             var connectionString = _databaseConfig.GetConnectionString();
-            var sql = "SELECT books.* FROM books JOIN user_book ON books.Id = user_book.BookId" +
+            var sql = "SELECT books.*, user_book.ishidden FROM books JOIN user_book ON books.Id = user_book.BookId" +
                       " WHERE user_book.UserId = @userID;";
 
             using (var conn = new NpgsqlConnection(connectionString))
@@ -36,7 +36,7 @@ public class BookRepository : IBookRepository
                     {
                         while (reader.Read())
                         {
-                            var book = BookDataMapper.map(reader);
+                            BookEntity book = BookDataMapper.map(reader);
                             data.Add(book);
                         }
                     }
@@ -92,11 +92,11 @@ public class BookRepository : IBookRepository
         }
     }
 
-    public async Task<Book> GetBook(int userId, int bookId)
+    public async Task<BookEntity> GetBook(int userId, int bookId)
     {
         var connectionString = _databaseConfig.GetConnectionString(); 
-        var sql = "SELECT books.* FROM books JOIN user_book ON books.Id = user_book.BookId" +
-                  " WHERE books.Id = @bookId;"; 
+        var sql = "SELECT books.*, user_book.ishidden FROM books JOIN user_book ON books.Id = user_book.BookId" +
+                  " WHERE books.Id = @bookId AND user_book.UserId = @userId;"; 
 
         using (var conn = new NpgsqlConnection(connectionString))
         {
@@ -104,12 +104,14 @@ public class BookRepository : IBookRepository
             using (var cmd = new NpgsqlCommand(sql, conn))
             { 
                 cmd.Parameters.AddWithValue("bookId", bookId);
+                cmd.Parameters.AddWithValue("userId", userId);
                 using (var reader = await cmd.ExecuteReaderAsync())
                 { 
                     if (reader.Read())
                     {
                         //using mapper to the element
                         var book = BookDataMapper.map(reader);
+                        Console.WriteLine(book.isHidden);
                         return book;
                     }
                     else
@@ -192,9 +194,7 @@ public class BookRepository : IBookRepository
    public async Task DeleteUserData(int userId)
    {
        // Delete user-book connections
-       var connectionString = _databaseConfig.GetConnectionString(); 
-       Console.WriteLine(connectionString);
-       Console.WriteLine(userId);
+       var connectionString = _databaseConfig.GetConnectionString();  
        var sql = "DELETE FROM user_book WHERE userid = @userId;"; 
    
        using (var conn = new NpgsqlConnection(connectionString))
@@ -209,4 +209,32 @@ public class BookRepository : IBookRepository
        }
    }
 
+   public async Task UpdateBookPrivacy(int userId, int bookId, bool isHidden)
+   {
+       try
+       {
+           Console.WriteLine("Getting to the update privacy method");
+           Console.WriteLine(isHidden);
+           var connectionString = _databaseConfig.GetConnectionString();
+           var sql = "UPDATE user_book SET isHidden = @isHidden WHERE UserId = @userId AND BookId = @bookId;";
+
+           using (var conn = new NpgsqlConnection(connectionString))
+           {
+               conn.Open();
+               using (var cmd = new NpgsqlCommand(sql, conn))
+               {
+                   cmd.Parameters.AddWithValue("userId", userId);
+                   cmd.Parameters.AddWithValue("bookId", bookId);
+                   cmd.Parameters.AddWithValue("isHidden", isHidden);
+                   var affectedRows = await cmd.ExecuteNonQueryAsync();
+                   Console.WriteLine($"{affectedRows} row(s) updated.");
+               }
+           }
+       }
+       catch (Exception ex)
+       {
+           Console.WriteLine($"An error occurred: {ex.Message}");
+           throw; // rethrow the exception if you want it to be handled at a higher level
+       }
+   }
 }

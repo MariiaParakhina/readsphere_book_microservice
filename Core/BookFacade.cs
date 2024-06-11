@@ -9,10 +9,11 @@ public class BookFacade(
     GetAllBooksUseCase getAllBooksUseCase,
     AddBookUseCase addBookUseCase,
     DeleteBookUseCase deleteBookUseCase,
-    GetBookByIdUseCase getBookByIdUseCase)
+    GetBookByIdUseCase getBookByIdUseCase,
+    UpdateBookPrivacyUseCase updateBookPrivacyUseCase)
     : IBookFacade
 {
-    public List<Book> GetAllBooks(int userId)
+    public List<BookEntity> GetAllBooks(int userId)
     {
         return getAllBooksUseCase.Execute(userId);
     }
@@ -27,8 +28,13 @@ public class BookFacade(
         await deleteBookUseCase.Execute(userId, bookId);
     }
 
-    public async Task<Book> GetBookById(int userId, int bookId)
+    public async Task<BookEntity> GetBookById(int userId, int bookId)
     {
         return await getBookByIdUseCase.Execute(userId, bookId);
+    }
+
+    public async Task UpdateBookPrivacy(int userId, int bookId, bool isHidden)
+    {
+        await updateBookPrivacyUseCase.Execute(userId, bookId, isHidden);
     }
 }

@@ -22,6 +22,8 @@ public class BookConfiguration : IEntityTypeConfiguration<Book>
             builder.Property(s => s.author)
                 .HasMaxLength(100)
                 .IsRequired();
+            
+            
 
         } 
 } 

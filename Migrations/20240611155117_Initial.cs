@@ -31,7 +31,8 @@ namespace BookService.Migrations
                 columns: table => new
                 {
                     userid = table.Column<int>(type: "integer", nullable: false),
-                    bookid = table.Column<int>(type: "integer", nullable: false)
+                    bookid = table.Column<int>(type: "integer", nullable: false),
+                    ishidden = table.Column<bool>(type: "boolean", nullable: false, defaultValue: false)
                 },
                 constraints: table =>
                 {

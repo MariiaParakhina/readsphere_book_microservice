@@ -58,6 +58,11 @@ namespace BookService.Migrations
                     b.Property<int>("bookid")
                         .HasColumnType("integer");
 
+                    b.Property<bool>("ishidden")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(false);
+
                     b.HasKey("userid", "bookid");
 
                     b.ToTable("user_book", (string)null);

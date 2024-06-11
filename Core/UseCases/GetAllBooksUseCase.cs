@@ -12,7 +12,7 @@ public class GetAllBooksUseCase:IGetAllBooksUseCase
     {
         _bookRepository = bookRepository;
     }
-    public List<Book> Execute(int userId)
+    public List<BookEntity> Execute(int userId)
     {
         return _bookRepository.GetBooks(userId);
     }
