@@ -31,6 +31,10 @@ public class BookFacade(
     public async Task<BookEntity> GetBookById(int userId, int bookId)
     {
         return await getBookByIdUseCase.Execute(userId, bookId);
+    }   
+    public async    Task<BookMapped> GetBookById(GetBookRequest getBookRequest)
+    {
+        return await getBookByIdUseCase.Execute(getBookRequest);
     }
 
     public async Task UpdateBookPrivacy(int userId, int bookId, bool isHidden)

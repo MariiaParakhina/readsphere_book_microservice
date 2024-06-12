@@ -44,7 +44,36 @@
 
             return Ok(bookDto);
         }
+        [HttpGet("book")]
+        [RequireHttps]
+        public async Task<IActionResult> GetBookDataById(int bookId, int userId)
+        {   
+            Console.WriteLine(bookId);
+            Console.WriteLine(userId);
+            bookMetrics.AddRequest();
+            string userIdStr = HttpContext.Request.Headers["X-User-Id"].ToString();
+            if (userIdStr is null) return StatusCode(500, "User ID not provided");
+            int userId2 = int.Parse(userIdStr);
+            if (userId == userId2)
+            {
+                BookEntity bookEntity = await bookFacade.GetBookById(userId, bookId); 
+                // Map domain entities to DTOs
+                BookDTO bookDto =  BookMapper.MapDTO(bookEntity);
 
+                return Ok(bookDto);
+            }
+            
+            GetBookRequest getBookRequest = new GetBookRequest
+            {
+                userId = userId,
+                bookId = bookId
+            };
+
+            BookMapped book = await bookFacade.GetBookById(getBookRequest);
+            Console.WriteLine(book.IsHidden); 
+
+            return Ok(book);
+        }
         [HttpPost]
         [RequireHttps]
         public async Task<IActionResult> AddBook(Book book)
